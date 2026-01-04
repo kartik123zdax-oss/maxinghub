@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maxing Knowledge Hub</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 15px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #000;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .price {
+      color: green;
+      font-weight: bold;
+    }
+
+    .comment {
+      background: #f0f0f0;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .admin {
+      background: #e8f0ff;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Maxing Knowledge Hub</h1>
+
+<!-- ADMIN LOGIN -->
+<div class="card admin" id="adminLogin">
+  <h2>Admin Login</h2>
+  <input type="password" id="adminPass" placeholder="Enter Admin Password" />
+  <button onclick="loginAdmin()">Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" style="display:none;">
+
+  <div class="card admin">
+    <h2>Upload Blog (Admin Only)</h2>
+    <input id="blogTitle" placeholder="Blog Title" />
+    <select id="blogCategory">
+      <option>Look Maxing</option>
+      <option>Body Maxing</option>
+      <option>Height Maxing</option>
+    </select>
+    <textarea id="blogContent" placeholder="Blog Content"></textarea>
+    <button onclick="addBlog()">Publish Blog</button>
+  </div>
+
+  <div class="card admin">
+    <h2>Upload PDF (Paid - Admin Only)</h2>
+    <input id="pdfTitle" placeholder="PDF Title" />
+    <input id="pdfPrice" type="number" placeholder="Manual Price" />
+    <button onclick="addPdf()">Add PDF</button>
+  </div>
+
+</div>
+
+<h2>Blogs</h2>
+<div id="blogs" class="grid"></div>
+
+<h2>Paid PDFs</h2>
+<div id="pdfs" class="grid"></div>
+
+<script>
+  // CHANGE THIS PASSWORD
+  const ADMIN_PASSWORD = "admin123";
+
+  let blogCount = 0;
+
+  function loginAdmin() {
+    if (adminPass.value === ADMIN_PASSWORD) {
+      adminLogin.style.display = "none";
+      adminPanel.style.display = "block";
+      alert("Admin logged in");
+    } else {
+      alert("Wrong password");
+    }
+  }
+
+  function addBlog() {
+    const title = blogTitle.value;
+    const category = blogCategory.value;
+    const content = blogContent.value;
+
+    if (!title || !content) return;
+
+    const id = "blog_" + blogCount++;
+
+    blogs.innerHTML += `
+      <div class="card">
+        <h3>${title}</h3>
+        <small>${category}</small>
+        <p>${content}</p>
+
+        <h4>Comments</h4>
+        <div id="${id}_comments"></div>
+
+        <input id="${id}_name" placeholder="Your Name" />
+        <textarea id="${id}_text" placeholder="Write a comment"></textarea>
+        <button onclick="addComment('${id}')">Post Comment</button>
+      </div>
+    `;
+
+    blogTitle.value = "";
+    blogContent.value = "";
+  }
+
+  function addComment(id) {
+    const name = document.getElementById(id + "_name").value;
+    const text = document.getElementById(id + "_text").value;
+
+    if (!name || !text) return;
+
+    document.getElementById(id + "_comments").innerHTML += `
+      <div class="comment">
+        <strong>${name}:</strong> ${text}
+      </div>
+    `;
+
+    document.getElementById(id + "_name").value = "";
+    document.getElementById(id + "_text").value = "";
+  }
+
+  function addPdf() {
+    const title = pdfTitle.value;
+    const price = pdfPrice.value;
+
+    if (!title || !price) return;
+
+    pdfs.innerHTML += `
+      <div class="card">
+        <h3>${title}</h3>
+        <p class="price">₹${price}</p>
+        <button disabled>Buy (Manual)</button>
+      </div>
+    `;
+
+    pdfTitle.value = "";
+    pdfPrice.value = "";
+  }
+</script>
+
+</body>
+</html>
